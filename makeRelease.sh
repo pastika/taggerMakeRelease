@@ -66,28 +66,31 @@ then
 fi
 
 #create release from tag 
+git push origin $BRANCH
 github-release release -u $USER -r $REPO_NAME -t $TAG -n $TAG -c $BRANCH -d "$MESSAGE"
 
 if [ -f $TOP_CFG_NAME ]
 then
-    MVAFILE=$(git show $BRANCH:$TOP_CFG_NAME | grep "modelFile" | sed 's/[^"]*"\([^"]*\)"/\1/')
-    if [[ ! -z ${MVAFILE// } ]]
+    MVAFILES=$(git show $BRANCH:$TOP_CFG_NAME | grep "modelFile" | sed 's/[^"]*"\([^"]*\)"/\1/')
+    if [[ ! -z ${MVAFILES// } ]]
     then
+
         #make tarball out of model file to save space 
-        MVATARBALL=${MVAFILE%.*}.tar.gz
+        MVATARBALL=MVAFILES.tar.gz
         cd $MVA_FILE_DIR
-        if [ -f $MVAFILE ]
-        then
-            tar czf $MVATARBALL $MVAFILE
-        else
-            echo "Model file "$MVAFILE" not found!"
-            exit 0
-        fi
+        for MVAFILE in $MVAFILES; do
+            if [ ! -f $MVAFILE ]
+            then
+                echo "Model file "$MVAFILE" not found!"
+                exit 0
+            fi
+        done
+        tar czf $MVATARBALL $MVAFILES
         
         #Upload tarball here
         if [ -f $MVATARBALL ]
         then
-            github-release upload -u $USER -r $REPO_NAME -t $TAG -n $MVATARBALL -f $MVATARBALL -l "MVA model file for resolved tagger"
+            github-release upload -u $USER -r $REPO_NAME -t $TAG -n $MVATARBALL -f $MVATARBALL -l "MVA model files"
         else
             echo "Tarball "$MVATARBALL" not found!!!!!!!"
         fi
