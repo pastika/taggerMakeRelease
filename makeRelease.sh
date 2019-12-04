@@ -15,8 +15,6 @@ OPTIND=1         # Reset in case getopts has been used previously in the shell.
 TOP_CFG_NAME=TopTagger.cfg
 
 
-
-
 function print_help {
     echo "Usage:"
     echo "makeRelease.sh -t RELEASE_TAG -b BRANCH [-d MVA_FILE_DIR] [-m MESSAGE]"
@@ -71,7 +69,7 @@ github-release release -u $USER -r $REPO_NAME -t $TAG -n $TAG -c $BRANCH -d "$ME
 
 if [ -f $TOP_CFG_NAME ]
 then
-    MVAFILES="$(git show $BRANCH:$TOP_CFG_NAME | grep "modelFile" | sed 's/[^"]*"\([^"]*\)"/\1/') $(git show $BRANCH:$TOP_CFG_NAME | grep "inputFile" | sed 's/[^"]*"\([^"]*\)"/\1/')"
+    MVAFILES=$(git show $BRANCH:$TOP_CFG_NAME | grep -e "modelFile" -e "inputFile" | sed 's/[^"]*"\([^"]*\)"/\1/')
     if [[ ! -z ${MVAFILES// } ]]
     then
 
