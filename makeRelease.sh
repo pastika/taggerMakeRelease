@@ -71,7 +71,7 @@ github-release release -u $USER -r $REPO_NAME -t $TAG -n $TAG -c $BRANCH -d "$ME
 
 if [ -f $TOP_CFG_NAME ]
 then
-    MVAFILES=$(git show $BRANCH:$TOP_CFG_NAME | grep "modelFile" | sed 's/[^"]*"\([^"]*\)"/\1/') $(git show $BRANCH:$TOP_CFG_NAME | grep "inputFile" | sed 's/[^"]*"\([^"]*\)"/\1/')
+    MVAFILES="$(git show $BRANCH:$TOP_CFG_NAME | grep "modelFile" | sed 's/[^"]*"\([^"]*\)"/\1/') $(git show $BRANCH:$TOP_CFG_NAME | grep "inputFile" | sed 's/[^"]*"\([^"]*\)"/\1/')"
     if [[ ! -z ${MVAFILES// } ]]
     then
 
